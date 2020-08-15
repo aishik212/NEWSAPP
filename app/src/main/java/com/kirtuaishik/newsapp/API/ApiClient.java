@@ -1,4 +1,4 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.API;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

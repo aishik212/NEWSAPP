@@ -1,4 +1,4 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

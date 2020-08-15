@@ -1,11 +1,15 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.adapters;
 
 import android.app.Application;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.kirtuaishik.newsapp.DBase.ArticlesRepository;
+import com.kirtuaishik.newsapp.models.Articles;
+
 import java.util.List;
+
 
 public class ArticleViewModel extends AndroidViewModel {
     private ArticlesRepository mRepository;
@@ -17,7 +21,7 @@ public class ArticleViewModel extends AndroidViewModel {
         mAllWords = mRepository.getAllArticles();
     }
 
-    LiveData<List<Articles>> getAllWords() {
+    public LiveData<List<Articles>> getAllWords() {
         return mAllWords;
     }
 

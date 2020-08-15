@@ -1,8 +1,9 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
 
 public class ResponseModel {
     @SerializedName("status")

@@ -1,4 +1,6 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.API;
+
+import com.kirtuaishik.newsapp.models.ResponseModel;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

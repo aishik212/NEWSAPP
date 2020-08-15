@@ -14,6 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.kirtuaishik.newsapp.API.ApiClient;
+import com.kirtuaishik.newsapp.API.NewsApiInterface;
+import com.kirtuaishik.newsapp.adapters.ArticleListAdapter;
+import com.kirtuaishik.newsapp.adapters.ArticleViewModel;
+import com.kirtuaishik.newsapp.models.Article;
+import com.kirtuaishik.newsapp.models.Articles;
+import com.kirtuaishik.newsapp.models.ResponseModel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,7 +29,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class MainActivity extends AppCompatActivity {
     private ArticleViewModel articleViewModel;

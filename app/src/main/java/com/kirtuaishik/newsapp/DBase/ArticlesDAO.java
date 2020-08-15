@@ -1,10 +1,12 @@
-package com.kirtuaishik.newsapp;
+package com.kirtuaishik.newsapp.DBase;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+
+import com.kirtuaishik.newsapp.models.Articles;
 
 import java.util.List;
 
