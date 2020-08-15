@@ -29,6 +29,7 @@ import com.kirtuaishik.newsapp.webpage;
 import java.util.List;
 
 import static com.google.android.gms.ads.formats.NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_PORTRAIT;
+import static com.kirtuaishik.newsapp.MainActivity.showAD;
 
 
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ArticleViewHolder> {
@@ -83,8 +84,13 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                     activity.startActivity(intent);
                 }
             });
-            refreshAd(holder.frameLayout);
 
+            if (showAD) {
+                holder.frameLayout.setVisibility(View.VISIBLE);
+                refreshAd(holder.frameLayout);
+            } else {
+                holder.frameLayout.setVisibility(View.GONE);
+            }
         }
     }
 
