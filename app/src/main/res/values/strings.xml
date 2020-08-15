@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NEWS APP</string>
+    <string name="add_word">ADD WORD</string>
+    <string name="hint_word">Word...</string>
+    <string name="button_save">Save</string>
+    <string name="empty_not_saved">Word not saved because it is empty.</string>
+</resources>
