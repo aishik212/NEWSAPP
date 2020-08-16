@@ -77,9 +77,7 @@ public class MainActivity extends DaggerAppCompatActivity {
                     public void onComplete(@NonNull Task<Boolean> task) {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
-                            Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(MainActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
                         }
                         Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
                         showAD = mFirebaseRemoteConfig.getBoolean("showAD");
@@ -123,9 +121,7 @@ public class MainActivity extends DaggerAppCompatActivity {
             public void onComplete(@NonNull Task<Boolean> task) {
                 if (task.isSuccessful()) {
                     boolean updated = task.getResult();
-                    Toast.makeText(MainActivity.this, "Fetch and activate succeeded", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Fetch Failed", Toast.LENGTH_SHORT).show();
                 }
                 Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
                 showAD = mFirebaseRemoteConfig.getBoolean("showAD");
@@ -135,32 +131,33 @@ public class MainActivity extends DaggerAppCompatActivity {
     }
 
     private void callAPI(NewsApiInterface apiInterface, String country) {
-
         //RXJAVA
-        apiInterface.getLatestNews2(country, getApiKey)
-                .toObservable()
-                .subscribeOn(Schedulers.io())
-                .subscribe(new io.reactivex.Observer<ResponseModel>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        if (getApiKey != null) {
+            apiInterface.getLatestNews2(country, getApiKey)
+                    .toObservable()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(new io.reactivex.Observer<ResponseModel>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(ResponseModel responseModel) {
-                        updateArticles(responseModel.getArticles());
-                    }
+                        @Override
+                        public void onNext(ResponseModel responseModel) {
+                            updateArticles(responseModel.getArticles());
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+        }
     }
 
     private void updateArticles(List<Article> a) {

@@ -52,7 +52,7 @@ public class webpage extends AppCompatActivity {
                     }
                 });
                 mWebview.loadUrl(url);
-                setContentView(mWebview);
+                // An extremely Dumb Bug, removed setcontentview as it set content on top of already set content
             }
         }
     }

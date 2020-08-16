@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kirtuaishik.newsapp.R;
 import com.kirtuaishik.newsapp.models.Articles;
 import com.kirtuaishik.newsapp.webpage;
@@ -87,10 +89,16 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             holder.web.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(activity, webpage.class);
-                    intent.putExtra("url", current.getUrl());
-                    intent.putExtra("title", current.getTitle());
-                    activity.startActivity(intent);
+                    try {
+                        Intent intent = new Intent(activity, webpage.class);
+                        intent.putExtra("url", current.getUrl());
+                        intent.putExtra("title", current.getTitle());
+                        activity.startActivity(intent);
+                    } catch (Exception e) {
+                        Log.e(TAG, "onClick: ", e);
+                        FirebaseCrashlytics.getInstance().log("On click " + e.getLocalizedMessage());
+                        Toast.makeText(activity, "No Url", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
 
