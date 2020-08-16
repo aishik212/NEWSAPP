@@ -135,6 +135,8 @@ public class MainActivity extends DaggerAppCompatActivity {
     }
 
     private void callAPI(NewsApiInterface apiInterface, String country) {
+
+        //RXJAVA
         apiInterface.getLatestNews2(country, getApiKey)
                 .toObservable()
                 .subscribeOn(Schedulers.io())

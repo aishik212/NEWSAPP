@@ -18,6 +18,7 @@ public class ArticlesRepository {
         allArticles = articlesDAO.getArticlesSorted();
     }
 
+    //LIVEDATA
     public LiveData<List<Articles>> getAllArticles() {
         return allArticles;
     }

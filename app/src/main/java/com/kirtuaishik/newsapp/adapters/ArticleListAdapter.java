@@ -81,6 +81,8 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             holder.date_tv.append(String.format("\nURL - %s", current.getUrl()));
             holder.title_tv.setText(current.getTitle());
             Log.d(TAG, "onBindViewHolder: " + drawable);
+
+            //GLIDE USED
             Glide.with(activity).load(current.getImageUrl()).into(holder.articleIMV);
             holder.web.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,6 +96,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
 
             if (showAD) {
                 holder.frameLayout.setVisibility(View.VISIBLE);
+                //Native Ads
                 refreshAd(holder.frameLayout);
             } else {
                 holder.frameLayout.setVisibility(View.GONE);
