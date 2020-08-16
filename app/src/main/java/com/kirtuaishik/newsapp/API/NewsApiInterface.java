@@ -2,11 +2,13 @@ package com.kirtuaishik.newsapp.API;
 
 import com.kirtuaishik.newsapp.models.ResponseModel;
 
-import retrofit2.Call;
+import io.reactivex.Flowable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface NewsApiInterface {
+
     @GET("top-headlines")
-    Call<ResponseModel> getLatestNews(@Query("country") String country, @Query("apiKey") String apiKey);
+    Flowable<ResponseModel> getLatestNews2(@Query("country") String country, @Query("apiKey") String apiKey);
+    //--------------------------The RxJava Call Section on Retrofit
 }

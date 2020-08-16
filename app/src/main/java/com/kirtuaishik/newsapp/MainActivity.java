@@ -1,6 +1,7 @@
 package com.kirtuaishik.newsapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,13 +28,10 @@ import com.kirtuaishik.newsapp.models.Article;
 import com.kirtuaishik.newsapp.models.Articles;
 import com.kirtuaishik.newsapp.models.ResponseModel;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     private ArticleViewModel articleViewModel;
@@ -41,15 +39,13 @@ public class MainActivity extends AppCompatActivity {
     public static final String API_KEY = "7876eea480474b59b25e82866d2f6374";
     public static String TAG = "news_app_log";
     Button US, IN;
-    private static RecyclerView recyclerView;
-    Call<ResponseModel> articleCall;
     public static boolean showAD = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = findViewById(R.id.rv);
+        RecyclerView recyclerView = findViewById(R.id.rv);
         US = findViewById(R.id.usa);
         IN = findViewById(R.id.india);
         final ArticleListAdapter adapter = new ArticleListAdapter(this);
@@ -82,13 +78,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         final NewsApiInterface apiInterface = ApiClient.getClient().create(NewsApiInterface.class);
-        articleCall = apiInterface.getLatestNews("us", API_KEY);
+        SharedPreferences preferences = getSharedPreferences("data", 0);
+        String string = preferences.getString("country", "in");
+        final String[] Country = {string};
+        String locale = getResources().getConfiguration().locale.getCountry();
+        //-------------------The Location Section-----------------------
+        if (locale.equals("IN") || locale.equals("US")) {
+            Country[0] = locale;
+            Toast.makeText(this, "Showing News From " + locale, Toast.LENGTH_SHORT).show();
+        }
+        callAPI(apiInterface, Country[0]);
         US.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 articleViewModel.deleteAll();
-                articleCall = apiInterface.getLatestNews("us", API_KEY);
-                loadDB();
+                Country[0] = "US";
+                preferences.edit().putString("country", Country[0]).apply();
+                callAPI(apiInterface, Country[0]);
             }
         });
 
@@ -96,8 +102,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 articleViewModel.deleteAll();
-                articleCall = apiInterface.getLatestNews("in", API_KEY);
-                loadDB();
+                Country[0] = "IN";
+                preferences.edit().putString("country", Country[0]).apply();
+                callAPI(apiInterface, Country[0]);
             }
         });
         mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(this, new OnCompleteListener<Boolean>() {
@@ -111,31 +118,47 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
                 showAD = mFirebaseRemoteConfig.getBoolean("showAD");
-                loadDB();
+                callAPI(apiInterface, Country[0]);
             }
         });
     }
 
-    private void loadDB() {
-        articleCall.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(@NotNull Call<ResponseModel> call, @NotNull Response<ResponseModel> response) {
-                if (response.body() != null && response.body().getStatus().equals("ok")) {
-                    List<Article> a = response.body().getArticles();
-                    if (a.size() > 0) {
-                        for (Article b : a) {
-                            Articles word = new Articles(b.getTitle().hashCode(), b.getTitle(), b.getPublishedAt(), b.getUrlToImage(), b.getUrl());
-                            articleViewModel.insert(word);
+    private void callAPI(NewsApiInterface apiInterface, String country) {
+        apiInterface.getLatestNews2(country, API_KEY)
+                .toObservable()
+                .subscribeOn(Schedulers.io())
+                .subscribe(new io.reactivex.Observer<ResponseModel>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(ResponseModel responseModel) {
+                        Log.d(TAG, "onNext: " + responseModel.getArticles());
+                        updateArticles(responseModel.getArticles());
+                        for (Article s : responseModel.getArticles()) {
+                            Log.d(TAG, "onNext: " + s.getContent());
                         }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getLocalizedMessage());
-            }
-        });
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void updateArticles(List<Article> a) {
+        for (Article b : a) {
+            Articles word = new Articles(b.getTitle().hashCode(), b.getTitle(), b.getPublishedAt(), b.getUrlToImage(), b.getUrl());
+            articleViewModel.insert(word);
+        }
     }
 
     @Override
