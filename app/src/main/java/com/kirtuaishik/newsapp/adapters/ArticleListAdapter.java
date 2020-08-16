@@ -3,6 +3,8 @@ package com.kirtuaishik.newsapp.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +31,16 @@ import com.kirtuaishik.newsapp.webpage;
 import java.util.List;
 
 import static com.google.android.gms.ads.formats.NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_PORTRAIT;
+import static com.kirtuaishik.newsapp.MainActivity.TAG;
 import static com.kirtuaishik.newsapp.MainActivity.showAD;
 
 
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ArticleViewHolder> {
 
+    private final Drawable drawable;
     private Activity activity;
     private UnifiedNativeAd nativeAd;
+
 
     static class ArticleViewHolder extends RecyclerView.ViewHolder {
         private final TextView date_tv, title_tv;
@@ -56,8 +61,9 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     private final LayoutInflater mInflater;
     private List<Articles> article; // Cached copy of words
 
-    public ArticleListAdapter(Context context) {
+    public ArticleListAdapter(Context context, Drawable drawable) {
         mInflater = LayoutInflater.from(context);
+        this.drawable = drawable;
     }
 
     @Override
@@ -74,6 +80,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             holder.date_tv.setText(String.format("Date - %s at %s", split[0], split[1]));
             holder.date_tv.append(String.format("\nURL - %s", current.getUrl()));
             holder.title_tv.setText(current.getTitle());
+            Log.d(TAG, "onBindViewHolder: " + drawable);
             Glide.with(activity).load(current.getImageUrl()).into(holder.articleIMV);
             holder.web.setOnClickListener(new View.OnClickListener() {
                 @Override

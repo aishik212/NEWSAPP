@@ -2,6 +2,7 @@ package com.kirtuaishik.newsapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,7 +11,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,25 +30,36 @@ import com.kirtuaishik.newsapp.models.ResponseModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DaggerAppCompatActivity {
     private ArticleViewModel articleViewModel;
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
-    public static final String API_KEY = "7876eea480474b59b25e82866d2f6374";
-    public static String TAG = "news_app_log";
     Button US, IN;
     public static boolean showAD = true;
+
+    @Inject
+    String getApiKey;
+    //----------------------------using dagger to get api key------------------------------------
+    public static String TAG = "news_app_log";
+
+    @Inject
+    Drawable drawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG, "onCreate: key " + getApiKey + " " + drawable);
+
         RecyclerView recyclerView = findViewById(R.id.rv);
         US = findViewById(R.id.usa);
         IN = findViewById(R.id.india);
-        final ArticleListAdapter adapter = new ArticleListAdapter(this);
+        final ArticleListAdapter adapter = new ArticleListAdapter(this, drawable);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         articleViewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
@@ -124,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void callAPI(NewsApiInterface apiInterface, String country) {
-        apiInterface.getLatestNews2(country, API_KEY)
+        apiInterface.getLatestNews2(country, getApiKey)
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .subscribe(new io.reactivex.Observer<ResponseModel>() {
@@ -135,11 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(ResponseModel responseModel) {
-                        Log.d(TAG, "onNext: " + responseModel.getArticles());
                         updateArticles(responseModel.getArticles());
-                        for (Article s : responseModel.getArticles()) {
-                            Log.d(TAG, "onNext: " + s.getContent());
-                        }
                     }
 
                     @Override

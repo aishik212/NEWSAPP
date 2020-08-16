@@ -3,6 +3,9 @@ package com.kirtuaishik.newsapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class Source {
 
     @SerializedName("id")

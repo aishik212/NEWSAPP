@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import javax.inject.Singleton;
 
+@Singleton
 public class ResponseModel {
     @SerializedName("status")
     private String status;
