@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -111,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         //-------------------The Location Section-----------------------
         if (locale.equals("IN") || locale.equals("US")) {
             Country[0] = locale;
-            Toast.makeText(this, "Showing News From " + locale, Toast.LENGTH_SHORT).show();
         }
         callAPI(apiInterface, Country[0]);
         US.setOnClickListener(new View.OnClickListener() {

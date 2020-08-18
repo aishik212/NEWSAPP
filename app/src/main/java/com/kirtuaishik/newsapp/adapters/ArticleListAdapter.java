@@ -81,7 +81,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             Article_Table current = article.get(position);
             String[] split = current.getDate().replaceAll("[a-zA-Z]", " ").split(" ");
             holder.date_tv.setText(String.format("Date - %s at %s", split[0], split[1]));
-            holder.date_tv.append(String.format("\nURL - %s", current.getUrl()));
+            //holder.date_tv.append(String.format("\nURL - %s", current.getUrl()));
             holder.title_tv.setText(current.getTitle());
             Log.d(TAG, "onBindViewHolder: " + drawable);
 
@@ -103,7 +103,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                 }
             });
 
-            if (showAD) {
+            if (showAD && (position + 1) % 2 == 0) {
                 holder.frameLayout.setVisibility(View.VISIBLE);
                 //Native Ads
                 refreshAd(holder.frameLayout);

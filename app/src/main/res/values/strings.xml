@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NEWS APP</string>
+    <string name="app_name">Indian News Aggregator</string>
     <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
     <string name="ad_app_icon">ad app Icon</string>
     <string name="nativeId">ca-app-pub-3940256099942544/2247696110</string>
