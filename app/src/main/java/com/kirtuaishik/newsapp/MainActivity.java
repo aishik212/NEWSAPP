@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     @Inject
     Drawable drawable;
     */
-    public static String TAG = "news_app_log";
+    public static final String TAG = "news_app_log";
 
     @Inject
     public ArticleTableRepo articleTableRepo;

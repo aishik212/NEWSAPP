@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 public class ArticleDataSource implements ArticleTableRepo {
 
-    private ArticlesDAO articlesDAO;
+    private final ArticlesDAO articlesDAO;
 
     @Inject
     public ArticleDataSource(ArticlesDAO articlesDAO) {

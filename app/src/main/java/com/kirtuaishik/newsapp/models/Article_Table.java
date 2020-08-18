@@ -22,7 +22,7 @@ public class Article_Table {
     private String imageUrl;
 
     @ColumnInfo(name = "url")
-    private String url;
+    private final String url;
 
     @NonNull
     @ColumnInfo(name = "date")

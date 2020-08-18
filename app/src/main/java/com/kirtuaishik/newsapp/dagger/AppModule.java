@@ -19,7 +19,7 @@ public class AppModule {
         return ContextCompat.getDrawable(application, android.R.drawable.presence_away);
     }*/
 
-    Application application;
+    final Application application;
 
     public AppModule(Application application) {
         this.application = application;
