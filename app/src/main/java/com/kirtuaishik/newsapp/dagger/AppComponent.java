@@ -2,26 +2,28 @@ package com.kirtuaishik.newsapp.dagger;
 
 import android.app.Application;
 
-import dagger.BindsInstance;
+import com.kirtuaishik.newsapp.MainActivity;
+import com.kirtuaishik.newsapp.dbase.ArticleDatabase;
+import com.kirtuaishik.newsapp.dbase.ArticleTableRepo;
+import com.kirtuaishik.newsapp.dbase.ArticlesDAO;
+
+import javax.inject.Singleton;
+
 import dagger.Component;
-import dagger.android.AndroidInjector;
-import dagger.android.support.AndroidSupportInjectionModule;
+import dagger.android.AndroidInjectionModule;
 
-@Component(
-        modules = {
-                AndroidSupportInjectionModule.class,
-                ActivityBuilderModule.class,
-                AppModule.class
-        })
-public interface AppComponent extends AndroidInjector<baseApp> {
+@Singleton
+@Component(dependencies = {}, modules = {AndroidInjectionModule.class, AppModule.class, RoomModule.class})
+public interface AppComponent {
 
-    @Component.Builder
-    interface Builder {
+    void inject(MainActivity mainActivity);
 
-        @BindsInstance
-        Builder application(Application application);
+    ArticlesDAO productDao();
 
+    ArticleDatabase demoDatabase();
 
-        AppComponent build();
-    }
+    ArticleTableRepo productRepository();
+
+    Application application();
+
 }

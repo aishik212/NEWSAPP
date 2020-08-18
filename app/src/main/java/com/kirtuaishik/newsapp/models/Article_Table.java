@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 
 @Entity(tableName = "articles_table")
-public class Articles {
+public class Article_Table {
     @PrimaryKey
     @ColumnInfo(name = "id")
     private int id;
@@ -28,7 +28,7 @@ public class Articles {
     @ColumnInfo(name = "date")
     private String date;
 
-    public Articles(@NotNull int id, @NotNull String title, @NotNull String date, String imageUrl, String url) {
+    public Article_Table(@NotNull int id, @NotNull String title, @NotNull String date, String imageUrl, String url) {
         this.id = id;
         this.title = title;
         this.date = date;

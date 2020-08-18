@@ -13,7 +13,7 @@ public class ResponseModel {
     @SerializedName("totalResults")
     private int totalResults;
     @SerializedName("articles")
-    private List<Article> articles = null;
+    private List<OnlineArticleModel> onlineArticleModels = null;
 
     public String getStatus() {
         return status;
@@ -31,11 +31,11 @@ public class ResponseModel {
         this.totalResults = totalResults;
     }
 
-    public List<Article> getArticles() {
-        return articles;
+    public List<OnlineArticleModel> getOnlineArticleModels() {
+        return onlineArticleModels;
     }
 
-    public void setArticles(List<Article> articles) {
-        this.articles = articles;
+    public void setOnlineArticleModels(List<OnlineArticleModel> onlineArticleModels) {
+        this.onlineArticleModels = onlineArticleModels;
     }
 }

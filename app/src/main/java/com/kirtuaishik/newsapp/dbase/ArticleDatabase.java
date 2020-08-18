@@ -1,29 +1,23 @@
-package com.kirtuaishik.newsapp.DBase;
+package com.kirtuaishik.newsapp.dbase;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
 import androidx.room.Database;
-import androidx.room.Room;
 import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
-import com.kirtuaishik.newsapp.models.Articles;
+import com.kirtuaishik.newsapp.models.Article_Table;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-@Database(entities = {Articles.class}, version = 3, exportSchema = false)
+@Database(entities = {Article_Table.class}, version = 4, exportSchema = false)
 public abstract class ArticleDatabase extends RoomDatabase {
 
-    public abstract ArticlesDAO articlesDAO();
+    public abstract ArticlesDAO getArticlesDAO();
+/*
 
     private static volatile ArticleDatabase INSTANCE;
     private static final int NUMBER_OF_THREADS = 4;
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+*/
 
-    public static ArticleDatabase getDatabase(final Context context) {
+/*    public static ArticleDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (ArticleDatabase.class) {
                 if (INSTANCE == null) {
@@ -36,12 +30,12 @@ public abstract class ArticleDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
-    }
+    }*/
 
-    private static RoomDatabase.Callback callback = new Callback() {
-        @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-        }
-    };
+//    private static RoomDatabase.Callback callback = new Callback() {
+//        @Override
+//        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+//            super.onOpen(db);
+//        }
+//    };
 }

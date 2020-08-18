@@ -1,4 +1,4 @@
-package com.kirtuaishik.newsapp.API;
+package com.kirtuaishik.newsapp.api;
 
 import com.kirtuaishik.newsapp.models.ResponseModel;
 

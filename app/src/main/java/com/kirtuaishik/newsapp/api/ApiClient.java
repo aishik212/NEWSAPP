@@ -1,4 +1,4 @@
-package com.kirtuaishik.newsapp.API;
+package com.kirtuaishik.newsapp.api;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

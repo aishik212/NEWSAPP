@@ -29,16 +29,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:autoText="true"
             android:gravity="center"
-            android:text="CHOOSE COUNTRY" />
+            android:text="@string/choose_country" />
 
         <Button
             android:id="@+id/india"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="INDIA" />
+            android:text="@string/india" />
 
         <Button
             android:id="@+id/usa"

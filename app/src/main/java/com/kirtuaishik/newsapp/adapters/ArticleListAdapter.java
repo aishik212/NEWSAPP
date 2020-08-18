@@ -1,5 +1,6 @@
 package com.kirtuaishik.newsapp.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +28,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.kirtuaishik.newsapp.R;
-import com.kirtuaishik.newsapp.models.Articles;
+import com.kirtuaishik.newsapp.models.Article_Table;
 import com.kirtuaishik.newsapp.webpage;
 
 import java.util.List;
@@ -61,7 +62,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     }
 
     private final LayoutInflater mInflater;
-    private List<Articles> article; // Cached copy of words
+    private List<Article_Table> article; // Cached copy of words
 
     public ArticleListAdapter(Context context, Drawable drawable) {
         mInflater = LayoutInflater.from(context);
@@ -77,7 +78,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public void onBindViewHolder(ArticleViewHolder holder, int position) {
         if (article != null) {
-            Articles current = article.get(position);
+            Article_Table current = article.get(position);
             String[] split = current.getDate().replaceAll("[a-zA-Z]", " ").split(" ");
             holder.date_tv.setText(String.format("Date - %s at %s", split[0], split[1]));
             holder.date_tv.append(String.format("\nURL - %s", current.getUrl()));
@@ -126,7 +127,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
                     nativeAd.destroy();
                 }
                 nativeAd = unifiedNativeAd;
-                UnifiedNativeAdView adView = (UnifiedNativeAdView) activity.getLayoutInflater()
+                @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) activity.getLayoutInflater()
                         .inflate(R.layout.nativeadlayout, null);
                 populateUnifiedNativeAdView(unifiedNativeAd, adView);
                 frameLayout.removeAllViews();
@@ -228,7 +229,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         // Updates the UI to say whether or not this ad has a video asset.
     }
 
-    public void setArticles(List<Articles> articles, Activity activity) {
+    public void setArticles(List<Article_Table> articles, Activity activity) {
         article = articles;
         this.activity = activity;
         notifyDataSetChanged();

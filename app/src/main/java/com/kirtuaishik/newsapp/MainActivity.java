@@ -1,8 +1,6 @@
 package com.kirtuaishik.newsapp;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,9 +8,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,24 +17,25 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.kirtuaishik.newsapp.API.ApiClient;
-import com.kirtuaishik.newsapp.API.NewsApiInterface;
 import com.kirtuaishik.newsapp.adapters.ArticleListAdapter;
-import com.kirtuaishik.newsapp.adapters.ArticleViewModel;
-import com.kirtuaishik.newsapp.models.Article;
-import com.kirtuaishik.newsapp.models.Articles;
+import com.kirtuaishik.newsapp.api.ApiClient;
+import com.kirtuaishik.newsapp.api.NewsApiInterface;
+import com.kirtuaishik.newsapp.dagger.AppModule;
+import com.kirtuaishik.newsapp.dagger.DaggerAppComponent;
+import com.kirtuaishik.newsapp.dagger.RoomModule;
+import com.kirtuaishik.newsapp.dbase.ArticleTableRepo;
+import com.kirtuaishik.newsapp.models.Article_Table;
+import com.kirtuaishik.newsapp.models.OnlineArticleModel;
 import com.kirtuaishik.newsapp.models.ResponseModel;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import dagger.android.support.DaggerAppCompatActivity;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends DaggerAppCompatActivity {
-    private ArticleViewModel articleViewModel;
+public class MainActivity extends AppCompatActivity {
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
     Button US, IN;
     public static boolean showAD = true;
@@ -45,39 +43,58 @@ public class MainActivity extends DaggerAppCompatActivity {
     @Inject
     String getApiKey;
     //----------------------------using dagger to get api key------------------------------------
+    /*
+    @Inject
+    Drawable drawable;
+    */
     public static String TAG = "news_app_log";
 
     @Inject
-    Drawable drawable;
+    public ArticleTableRepo articleTableRepo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: key " + getApiKey + " " + drawable);
+        Log.d(TAG, "onCreate: key " + TAG + " ");
+
+
+        DaggerAppComponent.builder()
+                .appModule(new AppModule(getApplication()))
+                .roomModule(new RoomModule(getApplication()))
+                .build()
+                .inject(this);
+
+        articleTableRepo.getAllArticles().observe(this, new Observer<List<Article_Table>>() {
+            @Override
+            public void onChanged(List<Article_Table> article_tables) {
+                for (Article_Table a :
+                        article_tables) {
+                    Log.d(TAG, "onChanged: " + a.getId() + " " + a.getTitle());
+                }
+            }
+        });
 
         RecyclerView recyclerView = findViewById(R.id.rv);
         US = findViewById(R.id.usa);
         IN = findViewById(R.id.india);
-        final ArticleListAdapter adapter = new ArticleListAdapter(this, drawable);
+        final ArticleListAdapter adapter = new ArticleListAdapter(this, null);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        articleViewModel = new ViewModelProvider(this).get(ArticleViewModel.class);
         FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(60)
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-        articleViewModel.getAllWords().observe(this, new Observer<List<Articles>>() {
+        articleTableRepo.getAllArticles().observe(this, new Observer<List<Article_Table>>() {
             @Override
-            public void onChanged(List<Articles> articles) {
+            public void onChanged(List<Article_Table> articles) {
                 mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(MainActivity.this, new OnCompleteListener<Boolean>() {
                     @Override
                     public void onComplete(@NonNull Task<Boolean> task) {
                         if (task.isSuccessful()) {
                             boolean updated = task.getResult();
-                        } else {
                         }
                         Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
                         showAD = mFirebaseRemoteConfig.getBoolean("showAD");
@@ -100,7 +117,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         US.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                articleViewModel.deleteAll();
+                articleTableRepo.deleteAll();
                 Country[0] = "US";
                 preferences.edit().putString("country", Country[0]).apply();
                 callAPI(apiInterface, Country[0]);
@@ -110,7 +127,7 @@ public class MainActivity extends DaggerAppCompatActivity {
         IN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                articleViewModel.deleteAll();
+                articleTableRepo.deleteAll();
                 Country[0] = "IN";
                 preferences.edit().putString("country", Country[0]).apply();
                 callAPI(apiInterface, Country[0]);
@@ -121,7 +138,6 @@ public class MainActivity extends DaggerAppCompatActivity {
             public void onComplete(@NonNull Task<Boolean> task) {
                 if (task.isSuccessful()) {
                     boolean updated = task.getResult();
-                } else {
                 }
                 Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
                 showAD = mFirebaseRemoteConfig.getBoolean("showAD");
@@ -144,7 +160,7 @@ public class MainActivity extends DaggerAppCompatActivity {
 
                         @Override
                         public void onNext(ResponseModel responseModel) {
-                            updateArticles(responseModel.getArticles());
+                            updateArticles(responseModel.getOnlineArticleModels());
                         }
 
                         @Override
@@ -160,22 +176,11 @@ public class MainActivity extends DaggerAppCompatActivity {
         }
     }
 
-    private void updateArticles(List<Article> a) {
-        for (Article b : a) {
-            Articles word = new Articles(b.getTitle().hashCode(), b.getTitle(), b.getPublishedAt(), b.getUrlToImage(), b.getUrl());
-            articleViewModel.insert(word);
+    private void updateArticles(List<OnlineArticleModel> a) {
+        for (OnlineArticleModel b : a) {
+            Article_Table word = new Article_Table(b.getTitle().hashCode(), b.getTitle(), b.getPublishedAt(), b.getUrlToImage(), b.getUrl());
+            articleTableRepo.insert(word);
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-        } else {
-            Toast.makeText(
-                    getApplicationContext(),
-                    R.string.empty_not_saved,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
 }

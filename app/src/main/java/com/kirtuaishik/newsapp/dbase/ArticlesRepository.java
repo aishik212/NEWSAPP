@@ -1,32 +1,24 @@
-package com.kirtuaishik.newsapp.DBase;
-
-import android.app.Application;
-
-import androidx.lifecycle.LiveData;
-
-import com.kirtuaishik.newsapp.models.Articles;
-
-import java.util.List;
+package com.kirtuaishik.newsapp.dbase;
 
 public class ArticlesRepository {
-    private ArticlesDAO articlesDAO;
-    private LiveData<List<Articles>> allArticles;
+    /*private ArticlesDAO articlesDAO;
+    private LiveData<List<Article_Table>> allArticles;
 
     public ArticlesRepository(Application application) {
         ArticleDatabase articleDatabase = ArticleDatabase.getDatabase(application);
-        articlesDAO = articleDatabase.articlesDAO();
+        articlesDAO = articleDatabase.getArticlesDAO();
         allArticles = articlesDAO.getArticlesSorted();
-    }
+    }*/
 
-    //LIVEDATA
-    public LiveData<List<Articles>> getAllArticles() {
+    /*//LIVEDATA
+    public LiveData<List<Article_Table>> getAllArticles() {
         return allArticles;
     }
 
-    public void insert(Articles articles) {
+    public void insert(Article_Table articleTable) {
         ArticleDatabase.databaseWriteExecutor.execute(() ->
         {
-            articlesDAO.insert(articles);
+            articlesDAO.insert(articleTable);
         });
     }
 
@@ -34,5 +26,5 @@ public class ArticlesRepository {
         ArticleDatabase.databaseWriteExecutor.execute(() -> {
             articlesDAO.deleteAll();
         });
-    }
+    }*/
 }
