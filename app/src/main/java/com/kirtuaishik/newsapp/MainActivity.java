@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
         articleTableRepo.getAllArticles().observe(this, new Observer<List<Article_Table>>() {
             @Override
             public void onChanged(List<Article_Table> article_tables) {
-                for (Article_Table a :
-                        article_tables) {
+                for (Article_Table a : article_tables) {
                     Log.d(TAG, "onChanged: " + a.getId() + " " + a.getTitle());
                 }
             }
@@ -86,22 +85,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
         mFirebaseRemoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
-        articleTableRepo.getAllArticles().observe(this, new Observer<List<Article_Table>>() {
-            @Override
-            public void onChanged(List<Article_Table> articles) {
-                mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(MainActivity.this, new OnCompleteListener<Boolean>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Boolean> task) {
-                        if (task.isSuccessful()) {
-                            boolean updated = task.getResult();
-                        }
-                        Log.d(TAG, "onComplete: " + mFirebaseRemoteConfig.getBoolean("showAD"));
-                        showAD = mFirebaseRemoteConfig.getBoolean("showAD");
-                        adapter.setArticles(articles, MainActivity.this);
-                    }
-                });
-            }
-        });
+
         final NewsApiInterface apiInterface = ApiClient.getClient().create(NewsApiInterface.class);
         SharedPreferences preferences = getSharedPreferences("data", 0);
         String string = preferences.getString("country", "in");
@@ -111,11 +95,26 @@ public class MainActivity extends AppCompatActivity {
         if (locale.equals("IN") || locale.equals("US")) {
             Country[0] = locale;
         }
+        Country[0] = "IN";
+        articleTableRepo.getAllArticles().observe(this, new Observer<List<Article_Table>>() {
+            @Override
+            public void onChanged(List<Article_Table> articles) {
+                mFirebaseRemoteConfig.fetchAndActivate().addOnCompleteListener(MainActivity.this, new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Boolean> task) {
+                        if (task.isSuccessful()) {
+                            boolean updated = task.getResult();
+                        }
+                        showAD = mFirebaseRemoteConfig.getBoolean("showAD");
+                        adapter.setArticles(articles, MainActivity.this);
+                    }
+                });
+            }
+        });
         callAPI(apiInterface, Country[0]);
         US.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                articleTableRepo.deleteAll();
                 Country[0] = "US";
                 preferences.edit().putString("country", Country[0]).apply();
                 callAPI(apiInterface, Country[0]);
@@ -125,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         IN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                articleTableRepo.deleteAll();
                 Country[0] = "IN";
                 preferences.edit().putString("country", Country[0]).apply();
                 callAPI(apiInterface, Country[0]);
@@ -146,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void callAPI(NewsApiInterface apiInterface, String country) {
         //RXJAVA
+        Log.d(TAG, "callAPI: " + getApiKey);
         if (getApiKey != null) {
             apiInterface.getLatestNews2(country, getApiKey)
                     .toObservable()
@@ -153,22 +152,24 @@ public class MainActivity extends AppCompatActivity {
                     .subscribe(new io.reactivex.Observer<ResponseModel>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            Log.d(TAG, "onSubscribe: ");
                         }
 
                         @Override
                         public void onNext(ResponseModel responseModel) {
+                            articleTableRepo.deleteAll();
                             updateArticles(responseModel.getOnlineArticleModels());
+                            Log.d(TAG, "onNext: " + responseModel.getTotalResults());
                         }
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Log.d(TAG, "onError: " + e.getLocalizedMessage());
                         }
 
                         @Override
                         public void onComplete() {
-
+                            Log.d(TAG, "onComplete: ");
                         }
                     });
         }

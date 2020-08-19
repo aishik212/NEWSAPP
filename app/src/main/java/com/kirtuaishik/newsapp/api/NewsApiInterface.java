@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface NewsApiInterface {
 
-    @GET("top-headlines")
+    @GET("everything")
     Flowable<ResponseModel> getLatestNews2(@Query("country") String country, @Query("apiKey") String apiKey);
     //--------------------------The RxJava Call Section on Retrofit
 }

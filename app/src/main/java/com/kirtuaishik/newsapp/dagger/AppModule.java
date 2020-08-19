@@ -10,10 +10,11 @@ import dagger.Provides;
 @Module
 public class AppModule {
     @Provides
+    @Singleton
     static String API_KEY() {
         return "7876eea480474b59b25e82866d2f6374";
     }
-/*
+    /*
     @Provides
     static Drawable logo(Application application) {
         return ContextCompat.getDrawable(application, android.R.drawable.presence_away);
